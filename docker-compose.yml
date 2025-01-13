@@ -4,9 +4,10 @@ services:
     build: .
     ports:
       - 8080:8080
+    env_file:
+      - .env
     networks:
-      - frontend-backend-network
-      - backend-database-network
+      - todoapp-network
 networks:
-  frontend-backend-network:
-  backend-database-network:
+  todoapp-network:
+    external: true

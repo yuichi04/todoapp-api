@@ -17,7 +17,6 @@ func NewDB() *gorm.DB {
 			log.Fatalln(err)
 		}
 	}
-
 	url := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PW"),
@@ -25,12 +24,10 @@ func NewDB() *gorm.DB {
 		os.Getenv("POSTGRES_PORT"),
 		os.Getenv("POSTGRES_DB"),
 	)
-
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	fmt.Println("Connected")
 	return db
 }
