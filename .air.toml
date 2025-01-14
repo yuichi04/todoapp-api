@@ -1,25 +1,42 @@
+# .air.toml
 root = "."
 tmp_dir = "tmp"
 
 [build]
+# バイナリをビルドするコマンド
 cmd = "go build -o ./tmp/main ."
+# バイナリファイルのパス
 bin = "./tmp/main"
+# ファイル変更を監視する拡張子
 include_ext = ["go", "tpl", "tmpl", "html"]
-exclude_dir = ["assets", "tmp", "vendor"]
+# 監視から除外するディレクトリ
+exclude_dir = ["assets", "tmp", "vendor", "frontend/node_modules"]
+# 監視に含めるディレクトリ
 include_dir = []
+# 監視から除外するファイル
 exclude_file = []
+# ファイル変更を検知してから再ビルドするまでの待機時間（ミリ秒）
 delay = 1000
+# ビルドエラー時に実行を停止するか
 stop_on_error = true
+# エラーログのファイル名
 log = "air_errors.log"
 
 [log]
-time = false
+# ログに時刻を表示するか
+time = true
 
 [color]
+# 各種ログの色設定
 main = "magenta"
 watcher = "cyan"
 build = "yellow"
 runner = "green"
 
+[screen]
+# clearコマンドを使用してターミナルをクリアするか
+clear_on_rebuild = true
+
 [misc]
+# 終了時に一時ファイルをクリーンアップするか
 clean_on_exit = true

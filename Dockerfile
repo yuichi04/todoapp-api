@@ -1,27 +1,22 @@
 FROM golang:alpine3.21
 
-# コンテナ内の作業ディレクトリを設定
+# 必要な依存パッケージをインストール
+RUN apk add --no-cache gcc musl-dev
+
 WORKDIR /todoapp-api
 
 # airのインストール
 RUN go install github.com/cosmtrek/air@latest
 
-# Go Modulesを有効にする
 ENV GO111MODULE=on
 
-# ローカルのモジュールキャッシュを最適化
-COPY go.mod .
-COPY go.sum .
+# 依存関係のインストール
+COPY go.mod go.sum ./
 RUN go mod download
 
-# ホストのファイルをコンテナの作業ディレクトリにコピー
+# その後にソースコードをコピー
 COPY . .
 
-# アプリケーションをビルド
-RUN go build -o main .
-
-# ポート番号を公開
 EXPOSE 8080
 
-# airを使用してアプリケーションを起動
 CMD ["air", "-c", ".air.toml"]
