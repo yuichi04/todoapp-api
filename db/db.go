@@ -10,10 +10,6 @@ import (
 )
 
 func NewDB() *gorm.DB {
-	fmt.Printf("POSTGRES_USER: %s\n", os.Getenv("POSTGRES_USER"))
-	fmt.Printf("POSTGRES_HOST: %s\n", os.Getenv("POSTGRES_HOST"))
-	fmt.Printf("POSTGRES_PORT: %s\n", os.Getenv("POSTGRES_PORT"))
-
 	url := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PW"),
