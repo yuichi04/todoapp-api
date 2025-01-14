@@ -1,7 +1,7 @@
 FROM golang:alpine3.21
 
 # コンテナ内の作業ディレクトリを設定
-WORKDIR /app
+WORKDIR /todoapp-api
 
 # Go Modulesを有効にする
 ENV GO111MODULE=on
