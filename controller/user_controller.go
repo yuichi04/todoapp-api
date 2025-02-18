@@ -8,6 +8,7 @@ import (
 	"todoapp-api/model"
 	"todoapp-api/usecase"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,6 +17,7 @@ type IUserController interface {
 	LogIn(c echo.Context) error
 	LogOut(c echo.Context) error
 	CsrfToken(c echo.Context) error
+	GetMe(c echo.Context) error
 }
 
 type userController struct {
@@ -98,4 +100,19 @@ func (uc *userController) CsrfToken(c echo.Context) error {
 	return c.JSON(http.StatusOK, echo.Map{
 		"csrf_token": token,
 	})
+}
+
+func (uc *userController) GetMe(c echo.Context) error {
+	// JWTからユーザーIDを取得
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userId := claims["user_id"]
+
+	// ユーザー情報を取得
+	userRes, err := uc.uu.GetUser(uint(userId.(float64)))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, userRes)
 }

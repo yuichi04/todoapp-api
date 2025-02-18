@@ -45,13 +45,12 @@ func NewRouter(uc controller.IUserController, tc controller.ITaskController) *ec
 		CookiePath:     "/",
 		CookieDomain:   os.Getenv("API_DOMAIN"),
 		CookieHTTPOnly: true,
-		CookieSameSite: http.SameSiteNoneMode,
-		// CookieSameSite: http.SameSiteDefaultMode,
-		// CookieMaxAge:   60,
+		CookieSameSite: http.SameSiteDefaultMode,
+		CookieMaxAge:   60,
 	}))
 
 	e.GET("/test", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Test endpoint workinga!")
+		return c.String(http.StatusOK, "Test endpoint working!")
 	})
 
 	e.POST("/signup", uc.SignUp)
@@ -59,13 +58,21 @@ func NewRouter(uc controller.IUserController, tc controller.ITaskController) *ec
 	e.POST("/logout", uc.LogOut)
 	e.GET("/csrf", uc.CsrfToken)
 
+	// 認証が必要なエンドポイントのグループ
+	a := e.Group("/auth")
+	a.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey:  []byte(os.Getenv("SECRET")),
+		TokenLookup: "cookie:token",
+	}))
+	// a.GET("/me", uc.GetMe)
+
 	t := e.Group("/tasks")
 	t.Use(echojwt.WithConfig(echojwt.Config{
 		SigningKey:  []byte(os.Getenv("SECRET")),
 		TokenLookup: "cookie:token",
 	}))
 
-	t.GET("/tasks", tc.GetAllTasks)
+	t.GET("", tc.GetAllTasks)
 	t.GET("/:taskId", tc.GetTaskById)
 	t.POST("", tc.CreateTask)
 	t.PUT("/:taskId", tc.UpdateTask)

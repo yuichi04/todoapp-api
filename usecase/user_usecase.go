@@ -14,6 +14,7 @@ import (
 type IUserUsecase interface {
 	SignUp(user model.User) (model.UserResponse, error)
 	LogIn(user model.User) (string, error)
+	GetUser(userId uint) (model.UserResponse, error)
 }
 
 type userUsecase struct {
@@ -83,4 +84,20 @@ func (uu *userUsecase) LogIn(user model.User) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func (uu *userUsecase) GetUser(userId uint) (model.UserResponse, error) {
+	user := model.User{}
+
+	if err := uu.ur.GetUserById(&user, userId); err != nil {
+		return model.UserResponse{}, err
+	}
+
+	// レスポンス用のユーザー情報を作成
+	resUser := model.UserResponse{
+		ID:    user.ID,
+		Email: user.Email,
+	}
+
+	return resUser, nil
 }
